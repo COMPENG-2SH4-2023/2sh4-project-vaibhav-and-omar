@@ -10,5 +10,3 @@ Section: L07,L10
 MacID: gopalv1,Seifo
 
 StudentID: 400460233,400476687
-
-Hi 
