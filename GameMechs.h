@@ -38,7 +38,6 @@ class GameMechs
 
         int getBoardSizeX();
         int getBoardSizeY();
-      
 
 };
 
