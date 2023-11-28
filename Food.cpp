@@ -5,7 +5,15 @@ Food::Food(GameMechs* gameRef)
     srand(time(NULL));
     foodPos = objPos();
     game = gameRef;
+    defaultFoodChar = 'o';
+
+    foodPosList = new objPosArrayList();
 }
+
+Food::~Food()
+{
+    delete foodPosList;
+};
 
 void Food::generateFood(objPosArrayList* player) {
     objPosArrayList* playerPosList; // get player position list
@@ -19,7 +27,7 @@ void Food::generateFood(objPosArrayList* player) {
         foodPos.setObjPos(
             (rand() % (game->getBoardSizeX() - 2) + 1), // randomize x, y and choose from random ascii character
             (rand() % (game->getBoardSizeY() - 2) + 1),
-            (char) (rand() % (126 - 33) + 33)
+            defaultFoodChar
         );
 
         for (int i = 0; i < playerPosList->getSize(); i++){

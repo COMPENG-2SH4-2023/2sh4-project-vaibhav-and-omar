@@ -130,12 +130,14 @@ void DrawScreen(void)
             MacUILib_printf("\n");
         }
 
-        MacUILib_printf("Score: %d\n\n", game->getScore());
+        MacUILib_printf("Score: %d\t", game->getScore());
+        MacUILib_printf("Length: %d\n\n", player->getPlayerPos()->getSize());
 
+        if (player->getPlayerDir() == Player::STOP) MacUILib_printf("--PRESS WASD TO MOVE--");
         // Debug Draw
 
-        MacUILib_printf("==DEBUG==\n\n");
-        MacUILib_printf("Player Direction: %d", player->getPlayerDir());
+        // MacUILib_printf("==DEBUG==\n\n");
+        // MacUILib_printf("Player Direction: %d", player->getPlayerDir());
     }else {
         if (game->getLoseFlagStatus() == 0) {
             // Exit game draw

@@ -14,16 +14,15 @@ class Food
         objPos foodPos;
         GameMechs* game;
 
+        char defaultFoodChar;
+
+        objPosArrayList* foodPosList;
     public:
         Food(GameMechs* gameRef);
+        ~Food();
 
         void generateFood(objPosArrayList* player);
         void getFoodPos(objPos &returnPos);
-};
-
-class SuperFood : public Food
-{
-
 };
 
 #endif
