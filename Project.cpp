@@ -3,6 +3,7 @@
 #include "objPos.h"
 #include "GameMechs.h"
 #include "Player.h"
+#include "Food.h"
 
 using namespace std;
 
@@ -13,6 +14,9 @@ GameMechs* game;
 
 // Global Player Object --> on heap
 Player* player;
+
+// Global Food Object --> on heap
+Food* food;
 
 void Initialize(void);
 void GetInput(void);
@@ -47,6 +51,9 @@ void Initialize(void)
 
     game = new GameMechs(); // initialize our GameMechs class
     player = new Player(game); // initialize our player class
+    food = new Food(game, player); // initialize our food
+
+    food->generateFood();
 }
 
 void GetInput(void)
@@ -65,6 +72,10 @@ void RunLogic(void)
         // Input Processing Actions START ----------------------
 
         game->processInput(); // Process input for exiting game and other debugging keys
+
+        if (game->getInput() == 'r') {
+            food->generateFood();
+        }
 
         player->updatePlayerDir();
 
@@ -99,6 +110,12 @@ void DrawScreen(void)
                     continue;
                 }
 
+                food->getFoodPos(current);
+                if (i == current.x && j == current.y) {
+                    MacUILib_printf("%c", current.symbol);
+                    continue;
+                }
+
                 MacUILib_printf("%c", game->getEmptyChar());
             }
             MacUILib_printf("\n");
@@ -129,6 +146,8 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
+    delete food;
+    food = nullptr;
     delete player;
     player = nullptr;
     delete game;
