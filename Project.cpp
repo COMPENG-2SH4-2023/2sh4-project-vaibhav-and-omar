@@ -51,10 +51,10 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     game = new GameMechs(); // initialize our GameMechs class
-    player = new Player(game); // initialize our player class
-    food = new Food(game, player); // initialize our food
+    food = new Food(game); // initialize our food
+    player = new Player(game, food); // initialize our player class
 
-    food->generateFood();
+    food->generateFood(player->getPlayerPos());
 }
 
 void GetInput(void)
@@ -75,7 +75,7 @@ void RunLogic(void)
         game->processInput(); // Process input for exiting game and other debugging keys
 
         if (game->getInput() == 'r') {
-            food->generateFood();
+            food->generateFood(player->getPlayerPos());
         }
 
         player->updatePlayerDir();

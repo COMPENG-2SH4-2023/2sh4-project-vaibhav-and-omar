@@ -1,8 +1,9 @@
 #include "Player.h"
 
-Player::Player(GameMechs* thisGMRef)
+Player::Player(GameMechs* thisGMRef, Food* foodRef)
 {
     mainGameMechsRef = thisGMRef;
+    food = foodRef;
     myDir = STOP;
 
 
@@ -18,6 +19,7 @@ Player::Player(GameMechs* thisGMRef)
 Player::~Player()
 {
     // delete any heap members here
+    delete playerPosList;
 }
 
 objPosArrayList* Player::getPlayerPos()
@@ -102,10 +104,32 @@ void Player::movePlayer()
         newHead.y = (mainGameMechsRef->getBoardSizeY() - 2) + (newHead.y % (mainGameMechsRef->getBoardSizeY() - 2));
     }
 
+    // Check self-collision (can never collide with first 3 elements of snake -> indexes 0 - 2)
+    objPos current;
+    for (int i = 3; i < playerPosList->getSize(); i++) { 
+        playerPosList->getElement(current, i);
+        if (current.isPosEqual(&newHead)) {
+            mainGameMechsRef->setLoseFlag();
+            return;
+        }
+    }
+
+    // check if overlapping with food
+    objPos foodPos;
+    food->getFoodPos(foodPos);
+    bool overlappingFood = false;
+
+    if (foodPos.isPosEqual(&newHead)) overlappingFood = true;
+
     // Insert our new head element
     if (myDir != STOP) {
         playerPosList->insertHead(newHead);
-        playerPosList->removeTail();
+        if (!overlappingFood){
+            playerPosList->removeTail();
+        }else {
+            mainGameMechsRef->incrementScore();
+            food->generateFood(playerPosList);
+        }
     }
 }
 

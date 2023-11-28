@@ -7,19 +7,17 @@
 #include "objPos.h"
 #include "objPosArrayList.h"
 #include "GameMechs.h"
-#include "Player.h"
 
 class Food 
 {
     private:
         objPos foodPos;
         GameMechs* game;
-        Player* player;
 
     public:
-        Food(GameMechs* gameRef, Player* playerRef);
+        Food(GameMechs* gameRef);
 
-        void generateFood();
+        void generateFood(objPosArrayList* player);
         void getFoodPos(objPos &returnPos);
 };
 

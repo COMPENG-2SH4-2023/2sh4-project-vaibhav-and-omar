@@ -1,17 +1,16 @@
 #include "Food.h"
 
-Food::Food(GameMechs* gameRef, Player* playerRef)
+Food::Food(GameMechs* gameRef)
 {
     srand(time(NULL));
     foodPos = objPos();
     game = gameRef;
-    player = playerRef;
 }
 
-void Food::generateFood() {
+void Food::generateFood(objPosArrayList* player) {
     objPosArrayList* playerPosList; // get player position list
     objPos playerPos;
-    playerPosList = player->getPlayerPos();
+    playerPosList = player;
     bool restart = 0;
 
     do {
