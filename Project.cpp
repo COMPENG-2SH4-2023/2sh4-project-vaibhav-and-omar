@@ -4,6 +4,7 @@
 #include "GameMechs.h"
 #include "Player.h"
 #include "Food.h"
+#include "objPosArrayList.h"
 
 using namespace std;
 
@@ -98,17 +99,25 @@ void DrawScreen(void)
             for (int i = 0; i < game->getBoardSizeX(); i++){
                 // Draw object by priority
                 objPos current;
+                objPosArrayList* currentList;
+                bool printed = 0;
 
                 if (( j == 0 ) || ( j == ( game->getBoardSizeY() - 1 ) ) || ( i == 0 ) || ( i == ( game->getBoardSizeX() - 1 ) )) {
                     MacUILib_printf("%c", game->getBorderChar());
                     continue;
                 }
 
-                player->getPlayerPos(current);
-                if (i == current.x && j == current.y){
-                    MacUILib_printf("%c", current.symbol);
-                    continue;
+                currentList = player->getPlayerPos();
+                for (int k = 0; k < currentList->getSize(); k++){
+                    currentList->getElement(current, k);
+                    if (i == current.x && j == current.y){
+                        MacUILib_printf("%c", current.symbol);
+                        printed = 1;
+                        break;
+                    }
                 }
+                if (printed) continue;
+                
 
                 food->getFoodPos(current);
                 if (i == current.x && j == current.y) {
