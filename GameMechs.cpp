@@ -83,6 +83,26 @@ void GameMechs::clearInput()
     input = 0;
 }
 
+void GameMechs::processInput()
+{
+    switch (input) {
+        case '\e':
+            setExitTrue();
+            break;
+        case '>':
+            incrementScore();
+            break;
+        case '<':
+            incrementScore(-1);
+            break;
+        case 'f':
+            setLoseFlag();
+            break;
+        default:
+            break;
+    }
+}
+
 // SCORE
 
 int GameMechs::getScore()

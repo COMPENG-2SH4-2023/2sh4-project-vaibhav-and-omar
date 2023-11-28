@@ -23,6 +23,8 @@ class Player
         void updatePlayerDir();
         void movePlayer();
 
+        int getPlayerDir();
+
     private:
         objPos playerPos;   // Upgrade this in iteration 3.       
         enum Dir myDir;

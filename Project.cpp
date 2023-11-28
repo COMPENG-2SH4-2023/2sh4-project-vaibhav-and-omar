@@ -2,16 +2,17 @@
 #include "MacUILib.h"
 #include "objPos.h"
 #include "GameMechs.h"
+#include "Player.h"
 
 using namespace std;
 
-#define DELAY_CONST 100000
+#define DELAY_CONST 150000
 
-// Global GameMechs object
-// - Destroyed when program terminates and calls destructor
-// - NOT on the heap --> literally no need to do so
-// - Class members can still be on heap, not affected at all
-GameMechs game; 
+// Global GameMechs object --> on heap
+GameMechs* game; 
+
+// Global Player Object --> on heap
+Player* player;
 
 void Initialize(void);
 void GetInput(void);
@@ -25,7 +26,7 @@ int main(void)
 
     Initialize();
 
-    while(game.getExitFlagStatus() == false)  
+    while(game->getExitFlagStatus() == false)  
     {
         GetInput();
         RunLogic();
@@ -44,79 +45,78 @@ void Initialize(void)
     MacUILib_init();
     MacUILib_clearScreen();
 
-    game = GameMechs(); // initialize our GameMechs class
+    game = new GameMechs(); // initialize our GameMechs class
+    player = new Player(game); // initialize our player class
 }
 
 void GetInput(void)
 {
     if (MacUILib_hasChar()){
-        game.setInput(MacUILib_getChar());
+        game->setInput(MacUILib_getChar());
     }else {
-        game.clearInput();
+        game->clearInput();
     }
 }
 
 void RunLogic(void)
 {
-    char input = game.getInput();
-    if (input != 0) {
+    if (game->getInput() != 0) {
 
         // Input Processing Actions START ----------------------
 
-        switch (input) {
-            case '\e':
-                game.setExitTrue();
-                break;
-            case '>':
-                game.incrementScore();
-                break;
-            case '<':
-                game.incrementScore(-1);
-                break;
-            case 'f':
-                game.setLoseFlag();
-                break;
-            default:
-                break;
-        }
+        game->processInput(); // Process input for exiting game and other debugging keys
+
+        player->updatePlayerDir();
 
         // Input Processing Actions END ------------------------
 
-        game.clearInput();
+        game->clearInput();
     }
+
+    player->movePlayer();
 }
 
 void DrawScreen(void)
 {
     MacUILib_clearScreen();
     
-    if (game.getExitFlagStatus() == 0) {
+    if (game->getExitFlagStatus() == 0) {
         // Default draw
 
-        for (int i = 0; i < game.getBoardSizeY(); i++) {
-            for (int j = 0; j < game.getBoardSizeX(); j++){
+        for (int j = 0; j < game->getBoardSizeY(); j++) {
+            for (int i = 0; i < game->getBoardSizeX(); i++){
                 // Draw object by priority
+                objPos current;
 
-                if (( i == 0 ) || ( i == ( game.getBoardSizeY() - 1 ) ) || ( j == 0 ) || ( j == ( game.getBoardSizeX() - 1 ) )) {
-                    MacUILib_printf("%c", game.getBorderChar());
-                    continue;
-                }else {
-                    MacUILib_printf("%c", game.getEmptyChar());
+                if (( j == 0 ) || ( j == ( game->getBoardSizeY() - 1 ) ) || ( i == 0 ) || ( i == ( game->getBoardSizeX() - 1 ) )) {
+                    MacUILib_printf("%c", game->getBorderChar());
                     continue;
                 }
 
+                player->getPlayerPos(current);
+                if (i == current.x && j == current.y){
+                    MacUILib_printf("%c", current.symbol);
+                    continue;
+                }
+
+                MacUILib_printf("%c", game->getEmptyChar());
             }
             MacUILib_printf("\n");
         }
 
-        MacUILib_printf("Score: %d\n\n", game.getScore());
+        MacUILib_printf("Score: %d\n\n", game->getScore());
+
+        // Debug Draw
+
+        MacUILib_printf("==DEBUG==\n\n");
+        MacUILib_printf("Player Direction: %d", player->getPlayerDir());
     }else {
-        if (game.getLoseFlagStatus() == 0) {
+        if (game->getLoseFlagStatus() == 0) {
             // Exit game draw
-            MacUILib_printf("Game Ended. Score: %d\n\n", game.getScore());
+            MacUILib_printf("Game Ended. Score: %d\n\n", game->getScore());
         }else {
             // Lose game draw
-            MacUILib_printf("You Died! Score: %d\n\n", game.getScore());
+            MacUILib_printf("You Died! Score: %d\n\n", game->getScore());
         }
     }
 }
@@ -129,5 +129,9 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
+    delete player;
+    player = nullptr;
+    delete game;
+    game = nullptr;
     MacUILib_uninit();
 }

@@ -44,6 +44,7 @@ class GameMechs
         char getInput();
         void setInput(char this_input);
         void clearInput();
+        void processInput();
 
         int getBoardSizeX();
         int getBoardSizeY();
