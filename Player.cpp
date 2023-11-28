@@ -8,8 +8,6 @@ Player::Player(GameMechs* thisGMRef)
     myDir = STOP;
 
     // more actions to be included
-
-    playerPos = objPos(5, 5, '@');
 }
 
 
@@ -26,23 +24,6 @@ void Player::getPlayerPos(objPos &returnPos)
 void Player::updatePlayerDir()
 {
     // PPA3 input processing logic
-
-    if (myDir != STOP) {
-        switch (myDir) {
-            case UP:
-                playerPos.y--;
-                break;
-            case DOWN:
-                playerPos.y++;
-                break;
-            case LEFT:
-                playerPos.x--;
-                break;
-            case RIGHT:
-                playerPos.x++;
-                break;
-        }
-    }
 }
 
 void Player::movePlayer()
