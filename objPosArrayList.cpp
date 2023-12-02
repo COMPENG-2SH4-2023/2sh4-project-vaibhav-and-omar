@@ -49,17 +49,21 @@ void objPosArrayList::insertTail(objPos thisPos)
 
 void objPosArrayList::removeHead()
 {
-    for (int i = 1; i < sizeList + 1; i++) {
-        aList[i-1].setObjPos(aList[i]); // copy the current indexes objPos to previous --> Shifts everything to the left
-    }
+    if (sizeList > 0) {
+        for (int i = 1; i < sizeList + 1; i++) {
+            aList[i-1].setObjPos(aList[i]); // copy the current indexes objPos to previous --> Shifts everything to the left
+        }
 
-    sizeList--;
+        sizeList--;
+    }
 }
 
 void objPosArrayList::removeTail()
 {
-    aList[sizeList] = objPos(); // remove/reset tail element and increment sizeList
-    sizeList--;
+    if (sizeList > 0) {
+        aList[sizeList] = objPos(); // remove/reset tail element and decrement sizeList
+        sizeList--;
+    }
 }
 
 void objPosArrayList::getHeadElement(objPos &returnPos)

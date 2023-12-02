@@ -11,18 +11,22 @@
 class Food 
 {
     private:
-        objPos foodPos;
         GameMechs* game;
 
         char defaultFoodChar;
+        char specialFood1;
+        char specialFood2;
+
+        int numOfRegular;
+        int numOfSpecial;
 
         objPosArrayList* foodPosList;
     public:
         Food(GameMechs* gameRef);
         ~Food();
 
-        void generateFood(objPosArrayList* player);
-        void getFoodPos(objPos &returnPos);
+        void generate(objPosArrayList* player);
+        objPosArrayList* getFoodList();
 };
 
 #endif

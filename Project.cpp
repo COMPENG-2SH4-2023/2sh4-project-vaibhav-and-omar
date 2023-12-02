@@ -54,7 +54,7 @@ void Initialize(void)
     food = new Food(game); // initialize our food
     player = new Player(game, food); // initialize our player class
 
-    food->generateFood(player->getPlayerPos());
+    food->generate(player->getPlayerPos()); // generate the first round of food
 }
 
 void GetInput(void)
@@ -75,7 +75,7 @@ void RunLogic(void)
         game->processInput(); // Process input for exiting game and other debugging keys
 
         if (game->getInput() == 'r') {
-            food->generateFood(player->getPlayerPos());
+            food->generate(player->getPlayerPos());
         }
 
         player->updatePlayerDir();
@@ -98,16 +98,27 @@ void DrawScreen(void)
         for (int j = 0; j < game->getBoardSizeY(); j++) {
             for (int i = 0; i < game->getBoardSizeX(); i++){
                 // Draw object by priority
-                objPos current;
+                objPos current; // temporary variables used for iterating through player and food lists
                 objPosArrayList* currentList;
                 bool printed = 0;
 
                 if (( j == 0 ) || ( j == ( game->getBoardSizeY() - 1 ) ) || ( i == 0 ) || ( i == ( game->getBoardSizeX() - 1 ) )) {
-                    MacUILib_printf("%c", game->getBorderChar());
+                    MacUILib_printf("%c", game->getBorderChar()); // print border characters
                     continue;
                 }
 
-                currentList = player->getPlayerPos();
+                currentList = player->getPlayerPos(); // loop through player array list and print characters
+                for (int k = 0; k < currentList->getSize(); k++){
+                    currentList->getElement(current, k);
+                    if (i == current.x && j == current.y){
+                        MacUILib_printf("%c", current.symbol);
+                        printed = 1;
+                        break;
+                    }
+                }
+                if (printed) continue; // we skip if we printed already
+
+                currentList = food->getFoodList(); // loop through food array list and print characters
                 for (int k = 0; k < currentList->getSize(); k++){
                     currentList->getElement(current, k);
                     if (i == current.x && j == current.y){
@@ -117,15 +128,8 @@ void DrawScreen(void)
                     }
                 }
                 if (printed) continue;
-                
 
-                food->getFoodPos(current);
-                if (i == current.x && j == current.y) {
-                    MacUILib_printf("%c", current.symbol);
-                    continue;
-                }
-
-                MacUILib_printf("%c", game->getEmptyChar());
+                MacUILib_printf("%c", game->getEmptyChar()); // if none of the above, then blank space
             }
             MacUILib_printf("\n");
         }
@@ -134,10 +138,11 @@ void DrawScreen(void)
         MacUILib_printf("Length: %d\n\n", player->getPlayerPos()->getSize());
 
         if (player->getPlayerDir() == Player::STOP) MacUILib_printf("--PRESS WASD TO MOVE--");
-        // Debug Draw
 
-        // MacUILib_printf("==DEBUG==\n\n");
+        // Debug Draw
+        //MacUILib_printf("==DEBUG==\n\n");
         // MacUILib_printf("Player Direction: %d", player->getPlayerDir());
+        //MacUILib_printf("Tiles Remaining: %d", ((game->getBoardSizeX() - 2) * (game->getBoardSizeY() - 2)) - food->getFoodList()->getSize() - player->getPlayerPos()->getSize());
     }else {
         if (game->getLoseFlagStatus() == 0) {
             // Exit game draw
@@ -157,10 +162,10 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    delete food;
-    food = nullptr;
     delete player;
     player = nullptr;
+    delete food;
+    food = nullptr;
     delete game;
     game = nullptr;
     MacUILib_uninit();

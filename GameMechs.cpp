@@ -31,7 +31,7 @@ GameMechs::GameMechs(int boardX, int boardY)
 }
 
 // do you need a destructor?
-// No we don't because there are no DMA (dynamically allocated variables)
+// --> No we don't because there are no DMA (dynamically allocated variables)
 
 int GameMechs::getBoardSizeX()
 {
@@ -85,19 +85,19 @@ void GameMechs::clearInput()
 
 void GameMechs::processInput()
 {
-    switch (input) {
+    switch (input) { // just some debugging keys
         case '\e':
             setExitTrue();
             break;
-        case '>':
-            incrementScore();
-            break;
-        case '<':
-            incrementScore(-1);
-            break;
-        case 'f':
-            setLoseFlag();
-            break;
+        //case '>':
+        //    incrementScore();
+        //    break;
+        //case '<':
+        //    incrementScore(-1);
+        //    break;
+        //case 'f':
+        //    setLoseFlag();
+        //    break;
         default:
             break;
     }
