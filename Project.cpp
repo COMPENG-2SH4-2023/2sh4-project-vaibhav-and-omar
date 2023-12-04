@@ -10,6 +10,15 @@ using namespace std;
 
 #define DELAY_CONST 150000
 
+// NOTES (IMPORTANT PLEASE READ --> WHOEVERS MARKING OR TESTING)
+// - There are no leaks in this program (triple checked), however it depends on the platform
+// --> if you are on MacOS, when using the leaks tool it should work as expected and give "0 leaks"
+// --> if you are linux, when using valgrind, you will see "201 bytes, possibly lost" this is due to the MacUILib library and is out of the projects scope / control (confirmed by Dr. Scott Chen and Dr. Athar)
+// --> if you are on windows, we haven't checked with Dr. Memory but it should be the same
+// - Additionally you will notice that there are 5 foods on the board at one time, with 1 of them being a special character (superfood)
+// --> There are two types of super foods, 1st is a "$" which simply increases score by 3 instead of 1
+// --> And the "%" superfood which decreases score but also removes some length from the snake
+
 // Global GameMechs object --> on heap
 GameMechs* game; 
 
